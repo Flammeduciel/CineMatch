@@ -359,6 +359,7 @@ body {
   background: var(--surface);
   color: var(--text);
   overflow: hidden;
+  margin: auto;
 }
 
 .movie-modal::backdrop {
