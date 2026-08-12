@@ -1,5 +1,8 @@
 (() => {
   const moviesGrid = document.getElementById('movies-grid');
+  const loader = document.getElementById('loader');
+  const errorMessage = document.getElementById('error-message');
+  const retryBtn = document.getElementById('retry-btn');
 
   function formatDate(dateStr) {
     if (!dateStr) return 'Date inconnue';
@@ -31,10 +34,33 @@
     });
   }
 
-  async function loadTrending() {
-    const movies = await fetchTrending();
-    renderMovies(movies);
+  function showLoader() {
+    loader.hidden = false;
+    errorMessage.hidden = true;
+    moviesGrid.innerHTML = '';
   }
 
+  function hideLoader() {
+    loader.hidden = true;
+  }
+
+  function showError() {
+    hideLoader();
+    errorMessage.hidden = false;
+    moviesGrid.innerHTML = '';
+  }
+
+  async function loadTrending() {
+    showLoader();
+    try {
+      const movies = await fetchTrending();
+      hideLoader();
+      renderMovies(movies);
+    } catch {
+      showError();
+    }
+  }
+
+  retryBtn.addEventListener('click', loadTrending);
   loadTrending();
 })();
