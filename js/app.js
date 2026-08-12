@@ -14,14 +14,21 @@
     return d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
+  function getRatingClass(rating) {
+    if (rating >= 7) return 'rating-high';
+    if (rating >= 5) return 'rating-medium';
+    return 'rating-low';
+  }
+
   function createCard(movie) {
     const card = document.createElement('article');
     card.className = 'movie-card';
     card.dataset.id = movie.id;
+    const ratingClass = movie.vote_average ? getRatingClass(movie.vote_average) : '';
     card.innerHTML = `
       <div class="movie-poster">
         <img src="${getPosterUrl(movie.poster_path)}" alt="${movie.title} - Affiche" loading="lazy">
-        <span class="movie-rating">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
+        <span class="movie-rating ${ratingClass}">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
       </div>
       <div class="movie-info">
         <h3 class="movie-title">${movie.title}</h3>
