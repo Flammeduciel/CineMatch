@@ -7,6 +7,14 @@
   const searchBtn = document.getElementById('search-btn');
   const searchClear = document.getElementById('search-clear');
   const sectionTitle = document.getElementById('section-title');
+  const modal = document.getElementById('movie-modal');
+  const modalClose = document.getElementById('modal-close');
+  const modalPoster = document.getElementById('modal-poster');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDate = document.getElementById('modal-date');
+  const modalRating = document.getElementById('modal-rating');
+  const modalGenres = document.getElementById('modal-genres');
+  const modalOverview = document.getElementById('modal-overview');
 
   function formatDate(dateStr) {
     if (!dateStr) return 'Date inconnue';
@@ -35,6 +43,7 @@
         <p class="movie-date">${formatDate(movie.release_date)}</p>
       </div>
     `;
+    card.addEventListener('click', () => openModal(movie));
     return card;
   }
 
@@ -64,6 +73,34 @@
     errorMessage.style.display = 'block';
     moviesGrid.innerHTML = '';
   }
+
+  async function openModal(movie) {
+    modalPoster.src = getPosterUrl(movie.poster_path, 'w500');
+    modalPoster.alt = `${movie.title} - Affiche`;
+    modalTitle.textContent = movie.title;
+    modalDate.textContent = formatDate(movie.release_date);
+    modalRating.textContent = `Note : ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}/10`;
+    modalRating.className = `modal-rating ${movie.vote_average ? getRatingClass(movie.vote_average) : ''}`;
+    modalOverview.textContent = movie.overview || 'Pas de synopsis disponible.';
+    modalGenres.textContent = 'Chargement...';
+    modal.showModal();
+    try {
+      const details = await fetchMovieDetails(movie.id);
+      modalGenres.textContent = details.genres.map(g => g.name).join(', ') || 'Genres inconnus';
+    } catch {
+      modalGenres.textContent = '';
+    }
+  }
+
+  modalClose.addEventListener('click', () => modal.close());
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.close();
+  });
+
+  modal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') modal.close();
+  });
 
   async function loadTrending() {
     sectionTitle.textContent = 'Films Populaires';
