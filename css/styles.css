@@ -231,12 +231,17 @@ body {
 }
 
 .loader {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 16px;
   padding: 60px 0;
   color: var(--text-secondary);
+}
+
+.loader[style*="display: flex"],
+.loader.is-visible {
+  display: flex;
 }
 
 .spinner {
@@ -253,6 +258,7 @@ body {
 }
 
 .error-message {
+  display: none;
   text-align: center;
   padding: 60px 20px;
   color: var(--text-secondary);

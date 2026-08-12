@@ -35,18 +35,18 @@
   }
 
   function showLoader() {
-    loader.hidden = false;
-    errorMessage.hidden = true;
+    loader.style.display = 'flex';
+    errorMessage.style.display = 'none';
     moviesGrid.innerHTML = '';
   }
 
   function hideLoader() {
-    loader.hidden = true;
+    loader.style.display = 'none';
   }
 
   function showError() {
     hideLoader();
-    errorMessage.hidden = false;
+    errorMessage.style.display = 'block';
     moviesGrid.innerHTML = '';
   }
 
@@ -56,7 +56,8 @@
       const movies = await fetchTrending();
       hideLoader();
       renderMovies(movies);
-    } catch {
+    } catch (err) {
+      console.error('Erreur chargement films:', err);
       showError();
     }
   }
