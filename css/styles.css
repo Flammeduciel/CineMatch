@@ -350,6 +350,118 @@ body {
   outline-offset: 3px;
 }
 
+.movie-modal {
+  width: min(90vw, 720px);
+  max-height: 90dvh;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.movie-modal::backdrop {
+  background: rgb(17 24 39 / 42%);
+  backdrop-filter: blur(2px);
+}
+
+.movie-modal[open] {
+  animation: modalIn 200ms var(--ease-out);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-content {
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-soft);
+  border: none;
+  border-radius: 50%;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 3;
+  transition: background var(--duration) var(--ease-out);
+}
+
+.modal-close:hover {
+  background: var(--line);
+}
+
+.modal-close:focus-visible {
+  outline: 3px solid rgb(0 102 204 / 32%);
+  outline-offset: 3px;
+}
+
+.modal-body {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+}
+
+.modal-poster {
+  width: 200px;
+  min-width: 200px;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.modal-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-info h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.modal-info h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: var(--text-secondary);
+}
+
+.modal-date {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.modal-rating {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.modal-genres {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.modal-overview {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
 @media (max-width: 559px) {
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -362,5 +474,25 @@ body {
   }
   .search-container {
     max-width: 100%;
+  }
+  .modal-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 16px;
+  }
+  .modal-poster {
+    width: 160px;
+    min-width: 160px;
+  }
+  .modal-info {
+    align-items: center;
+  }
+  .modal-info h3 {
+    text-align: left;
+    width: 100%;
+  }
+  .modal-overview {
+    text-align: left;
   }
 }
