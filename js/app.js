@@ -18,6 +18,7 @@
   const modalGenres = document.getElementById('modal-genres');
   const modalOverview = document.getElementById('modal-overview');
   const modalFavBtn = document.getElementById('modal-fav-btn');
+  const modalTrailer = document.getElementById('modal-trailer');
 
   let currentModalMovie = null;
 
@@ -136,6 +137,8 @@
     modalRating.className = `modal-rating ${movie.vote_average ? getRatingClass(movie.vote_average) : ''}`;
     modalOverview.textContent = movie.overview || 'Pas de synopsis disponible.';
     modalGenres.textContent = 'Chargement...';
+    modalTrailer.hidden = true;
+    modalTrailer.innerHTML = '';
     updateModalFavBtn();
     modal.showModal();
     try {
@@ -143,6 +146,17 @@
       modalGenres.textContent = details.genres.map(g => g.name).join(', ') || 'Genres inconnus';
     } catch {
       modalGenres.textContent = '';
+    }
+    try {
+      const videos = await fetchMovieVideos(movie.id);
+      const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube')
+        || videos.find(v => v.site === 'YouTube');
+      if (trailer) {
+        modalTrailer.innerHTML = `<iframe src="https://www.youtube.com/embed/${trailer.key}" title="${trailer.name}" allowfullscreen></iframe>`;
+        modalTrailer.hidden = false;
+      }
+    } catch {
+      //无声失败，不显示视频
     }
   }
 

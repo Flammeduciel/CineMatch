@@ -521,6 +521,17 @@ body {
   outline-offset: 3px;
 }
 
+.modal-trailer {
+  padding: 0 24px 24px;
+}
+
+.modal-trailer iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: 0;
+  border-radius: var(--radius-sm);
+}
+
 @media (max-width: 559px) {
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -553,5 +564,8 @@ body {
   }
   .modal-overview {
     text-align: left;
+  }
+  .modal-trailer {
+    padding: 0 16px 16px;
   }
 }

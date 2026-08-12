@@ -26,3 +26,10 @@ async function fetchMovieDetails(id) {
   if (!res.ok) throw new Error(`Erreur ${res.status}`);
   return await res.json();
 }
+
+async function fetchMovieVideos(id) {
+  const res = await fetch(`${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}&language=fr-FR`);
+  if (!res.ok) throw new Error(`Erreur ${res.status}`);
+  const data = await res.json();
+  return data.results;
+}
