@@ -219,6 +219,7 @@ body {
 }
 
 .movie-poster {
+  position: relative;
   aspect-ratio: 2/3;
   overflow: hidden;
   background: var(--surface-soft);
@@ -257,13 +258,17 @@ body {
 }
 
 .movie-rating {
-  display: inline-block;
-  padding: 2px 8px;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
   border-radius: var(--radius-pill);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  background: var(--surface);
-  color: var(--text-secondary);
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
+  backdrop-filter: blur(4px);
+  z-index: 2;
 }
 
 .loader {

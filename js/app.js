@@ -21,11 +21,11 @@
     card.innerHTML = `
       <div class="movie-poster">
         <img src="${getPosterUrl(movie.poster_path)}" alt="${movie.title} - Affiche" loading="lazy">
+        <span class="movie-rating">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
       </div>
       <div class="movie-info">
         <h3 class="movie-title">${movie.title}</h3>
         <p class="movie-date">${formatDate(movie.release_date)}</p>
-        <span class="movie-rating">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
       </div>
     `;
     return card;
