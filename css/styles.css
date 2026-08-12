@@ -286,6 +286,35 @@ body {
   background: rgba(239, 68, 68, 0.85);
 }
 
+.card-fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 50%);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform var(--duration) var(--ease-out), background var(--duration) var(--ease-out);
+  backdrop-filter: blur(4px);
+}
+
+.card-fav-btn:hover {
+  transform: scale(1.1);
+  background: rgb(0 0 0 / 70%);
+}
+
+.card-fav-btn.is-fav {
+  color: #ef4444;
+  background: rgb(0 0 0 / 70%);
+}
+
 .loader {
   display: none;
   flex-direction: column;
@@ -461,6 +490,35 @@ body {
   font-size: 14px;
   line-height: 1.6;
   color: var(--text-secondary);
+}
+
+#modal-fav-btn {
+  align-self: flex-start;
+  margin-top: 12px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-soft);
+  border: none;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text);
+  transition: background var(--duration) var(--ease-out), color var(--duration) var(--ease-out);
+}
+
+#modal-fav-btn:hover {
+  background: var(--line);
+}
+
+#modal-fav-btn.is-fav {
+  color: #ef4444;
+}
+
+#modal-fav-btn:focus-visible {
+  outline: 3px solid rgb(0 102 204 / 32%);
+  outline-offset: 3px;
 }
 
 @media (max-width: 559px) {
