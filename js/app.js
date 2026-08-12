@@ -1,5 +1,7 @@
 (() => {
   const moviesGrid = document.getElementById('movies-grid');
+  const favoritesGrid = document.getElementById('favorites-grid');
+  const favoritesSection = document.getElementById('favorites-section');
   const loader = document.getElementById('loader');
   const errorMessage = document.getElementById('error-message');
   const retryBtn = document.getElementById('retry-btn');
@@ -15,6 +17,9 @@
   const modalRating = document.getElementById('modal-rating');
   const modalGenres = document.getElementById('modal-genres');
   const modalOverview = document.getElementById('modal-overview');
+  const modalFavBtn = document.getElementById('modal-fav-btn');
+
+  let currentModalMovie = null;
 
   function formatDate(dateStr) {
     if (!dateStr) return 'Date inconnue';
@@ -33,7 +38,11 @@
     card.className = 'movie-card';
     card.dataset.id = movie.id;
     const ratingClass = movie.vote_average ? getRatingClass(movie.vote_average) : '';
+    const isFav = Favorites.isFavorite(movie.id);
     card.innerHTML = `
+      <button class="card-fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${movie.id}" aria-label="${isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
+        ${isFav ? '&#9829;' : '&#9825;'}
+      </button>
       <div class="movie-poster">
         <img src="${getPosterUrl(movie.poster_path)}" alt="${movie.title} - Affiche" loading="lazy">
         <span class="movie-rating ${ratingClass}">${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
@@ -43,7 +52,19 @@
         <p class="movie-date">${formatDate(movie.release_date)}</p>
       </div>
     `;
-    card.addEventListener('click', () => openModal(movie));
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.card-fav-btn')) return;
+      openModal(movie);
+    });
+    const favBtn = card.querySelector('.card-fav-btn');
+    favBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const added = Favorites.toggle(movie);
+      favBtn.classList.toggle('is-fav', added);
+      favBtn.innerHTML = added ? '&#9829;' : '&#9825;';
+      favBtn.setAttribute('aria-label', added ? 'Retirer des favoris' : 'Ajouter aux favoris');
+      renderFavorites();
+    });
     return card;
   }
 
@@ -56,6 +77,37 @@
     movies.forEach(movie => {
       moviesGrid.appendChild(createCard(movie));
     });
+  }
+
+  function renderFavorites() {
+    const favs = Favorites.getAll();
+    if (favs.length === 0) {
+      favoritesSection.hidden = true;
+      return;
+    }
+    favoritesSection.hidden = false;
+    favoritesGrid.innerHTML = '';
+    favs.forEach(movie => {
+      favoritesGrid.appendChild(createCard(movie));
+    });
+  }
+
+  function updateCardFavBtns(movieId) {
+    const btns = document.querySelectorAll(`.card-fav-btn[data-fav-id="${movieId}"]`);
+    const isFav = Favorites.isFavorite(movieId);
+    btns.forEach(btn => {
+      btn.classList.toggle('is-fav', isFav);
+      btn.innerHTML = isFav ? '&#9829;' : '&#9825;';
+      btn.setAttribute('aria-label', isFav ? 'Retirer des favoris' : 'Ajouter aux favoris');
+    });
+  }
+
+  function updateModalFavBtn() {
+    if (!currentModalMovie) return;
+    const isFav = Favorites.isFavorite(currentModalMovie.id);
+    modalFavBtn.classList.toggle('is-fav', isFav);
+    modalFavBtn.querySelector('.heart-icon').innerHTML = isFav ? '&#9829;' : '&#9825;';
+    modalFavBtn.setAttribute('aria-label', isFav ? 'Retirer des favoris' : 'Ajouter aux favoris');
   }
 
   function showLoader() {
@@ -75,6 +127,7 @@
   }
 
   async function openModal(movie) {
+    currentModalMovie = movie;
     modalPoster.src = getPosterUrl(movie.poster_path, 'w500');
     modalPoster.alt = `${movie.title} - Affiche`;
     modalTitle.textContent = movie.title;
@@ -83,6 +136,7 @@
     modalRating.className = `modal-rating ${movie.vote_average ? getRatingClass(movie.vote_average) : ''}`;
     modalOverview.textContent = movie.overview || 'Pas de synopsis disponible.';
     modalGenres.textContent = 'Chargement...';
+    updateModalFavBtn();
     modal.showModal();
     try {
       const details = await fetchMovieDetails(movie.id);
@@ -100,6 +154,14 @@
 
   modal.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') modal.close();
+  });
+
+  modalFavBtn.addEventListener('click', () => {
+    if (!currentModalMovie) return;
+    Favorites.toggle(currentModalMovie);
+    updateModalFavBtn();
+    renderFavorites();
+    updateCardFavBtns(currentModalMovie.id);
   });
 
   async function loadTrending() {
@@ -151,5 +213,6 @@
   });
 
   retryBtn.addEventListener('click', loadTrending);
+  renderFavorites();
   loadTrending();
 })();
