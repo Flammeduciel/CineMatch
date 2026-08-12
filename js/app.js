@@ -3,6 +3,10 @@
   const loader = document.getElementById('loader');
   const errorMessage = document.getElementById('error-message');
   const retryBtn = document.getElementById('retry-btn');
+  const searchInput = document.getElementById('search-input');
+  const searchBtn = document.getElementById('search-btn');
+  const searchClear = document.getElementById('search-clear');
+  const sectionTitle = document.getElementById('section-title');
 
   function formatDate(dateStr) {
     if (!dateStr) return 'Date inconnue';
@@ -29,6 +33,10 @@
 
   function renderMovies(movies) {
     moviesGrid.innerHTML = '';
+    if (movies.length === 0) {
+      moviesGrid.innerHTML = '<p class="no-results">Aucun film trouvé.</p>';
+      return;
+    }
     movies.forEach(movie => {
       moviesGrid.appendChild(createCard(movie));
     });
@@ -51,6 +59,7 @@
   }
 
   async function loadTrending() {
+    sectionTitle.textContent = 'Films Populaires';
     showLoader();
     try {
       const movies = await fetchTrending();
@@ -61,6 +70,41 @@
       showError();
     }
   }
+
+  async function handleSearch() {
+    const query = searchInput.value.trim();
+    if (!query) {
+      loadTrending();
+      return;
+    }
+    sectionTitle.textContent = `Résultats pour "${query}"`;
+    showLoader();
+    try {
+      const movies = await searchMovies(query);
+      hideLoader();
+      renderMovies(movies);
+    } catch (err) {
+      console.error('Erreur recherche:', err);
+      showError();
+    }
+  }
+
+  searchBtn.addEventListener('click', handleSearch);
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleSearch();
+  });
+
+  searchInput.addEventListener('input', () => {
+    searchClear.classList.toggle('visible', searchInput.value.length > 0);
+  });
+
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    searchClear.classList.remove('visible');
+    loadTrending();
+    searchInput.focus();
+  });
 
   retryBtn.addEventListener('click', loadTrending);
   loadTrending();

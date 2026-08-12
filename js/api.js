@@ -13,3 +13,10 @@ function getPosterUrl(path, size = 'w342') {
   if (!path) return '';
   return `${IMG_BASE}/${size}${path}`;
 }
+
+async function searchMovies(query) {
+  const res = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&language=fr-FR&query=${encodeURIComponent(query)}`);
+  if (!res.ok) throw new Error(`Erreur ${res.status}`);
+  const data = await res.json();
+  return data.results;
+}
