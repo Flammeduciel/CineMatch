@@ -41,7 +41,7 @@
     const isFav = Favorites.isFavorite(movie.id);
     card.innerHTML = `
       <button class="card-fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${movie.id}" aria-label="${isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
-        ${isFav ? '&#9829;' : '&#9825;'}
+        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
       </button>
       <div class="movie-poster">
         <img src="${getPosterUrl(movie.poster_path)}" alt="${movie.title} - Affiche" loading="lazy">
@@ -61,7 +61,7 @@
       e.stopPropagation();
       const added = Favorites.toggle(movie);
       favBtn.classList.toggle('is-fav', added);
-      favBtn.innerHTML = added ? '&#9829;' : '&#9825;';
+      favBtn.innerHTML = `<i class="fa-${added ? 'solid' : 'regular'} fa-heart"></i>`;
       favBtn.setAttribute('aria-label', added ? 'Retirer des favoris' : 'Ajouter aux favoris');
       renderFavorites();
     });
@@ -97,7 +97,7 @@
     const isFav = Favorites.isFavorite(movieId);
     btns.forEach(btn => {
       btn.classList.toggle('is-fav', isFav);
-      btn.innerHTML = isFav ? '&#9829;' : '&#9825;';
+      btn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>`;
       btn.setAttribute('aria-label', isFav ? 'Retirer des favoris' : 'Ajouter aux favoris');
     });
   }
@@ -106,7 +106,7 @@
     if (!currentModalMovie) return;
     const isFav = Favorites.isFavorite(currentModalMovie.id);
     modalFavBtn.classList.toggle('is-fav', isFav);
-    modalFavBtn.querySelector('.heart-icon').innerHTML = isFav ? '&#9829;' : '&#9825;';
+    modalFavBtn.querySelector('i').className = `fa-${isFav ? 'solid' : 'regular'} fa-heart`;
     modalFavBtn.setAttribute('aria-label', isFav ? 'Retirer des favoris' : 'Ajouter aux favoris');
   }
 
